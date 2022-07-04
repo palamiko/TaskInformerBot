@@ -1,7 +1,10 @@
 from models.tasks import PrevTask, Task
+from utils.const import title_show_ticket
 
 
 class MessageHandler:
+
+    message = None
 
     def __init__(self):
         self.temp_task: list[PrevTask] = []
@@ -44,6 +47,27 @@ class MessageHandler:
 
         return formed_tasks
 
+    def get_task_from_list(self, task_list: list[Task]) -> list[PrevTask]:
+        """ Формирует список PrevTask из списка """
+        formed_tasks = []
+
+        for task in task_list:
+            task = PrevTask(
+                key=task.key,
+                title=task.fields.summary,
+                country=task.fields.customfield_12838.value,
+                executor=self._get_executor(task),
+                contact=task.fields.customfield_11611,
+                status=task.fields.status.name,
+                solution=task.fields.status.statusCategory.name,
+                priority=task.fields.priority.name,
+                number=task.fields.customfield_11213,
+                description=task.fields.description
+            )
+            formed_tasks.append(task)
+
+        return formed_tasks
+
     @classmethod
     def format_message(cls, items: list[PrevTask]) -> str:
         """  Формирует читабельный вывод краткого списка тикетов"""
@@ -64,7 +88,7 @@ class MessageHandler:
     @classmethod
     def unpack_task_key(cls, tasks: list[PrevTask]) -> list[str]:
         """ Формирует список имен(EASUP-xxx) тикетов для названий кнопок """
-        task_keys = ['Показать тикеты']
+        task_keys = [title_show_ticket]
         for item in tasks:
             task_keys.append(item.key)
         return task_keys

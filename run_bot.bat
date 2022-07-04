@@ -1,8 +1,11 @@
 
 @set token="token"
 @set login="login"
-@set password="passwd"
-@set count="4"
+@set password="password"
+@set count=4
+@set interval=40
 
-@python ./main.py -t %token% -l %login% -p %password%
+echo "Bot started.."
+
+@python ./main.py -t %token% -l %login% -p %password% -c %count% -i %interval%
 pause
