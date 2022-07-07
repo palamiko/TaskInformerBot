@@ -1,5 +1,5 @@
-from models.tasks import PrevTask, Task
-from utils.const import title_show_ticket
+from bot_app.models.tasks import PrevTask, Task
+from bot_app.utils.const import title_show_ticket
 
 
 class MessageHandler:
