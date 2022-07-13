@@ -1,10 +1,19 @@
 import logging.config
 import logging
 import os
+import sys
+
 import yaml
 
 
-def setup_logging(default_level, default_path=".\\bot_app\\utils\\log_config.yaml", env_key='LOG_CFG'):
+def detect_os() -> str:
+    if sys.platform.startswith('win32'):
+        return ".\\bot_app\\utils\\log_config.yaml"
+    else:
+        return "./bot_app/utils/log_config.yaml"
+
+
+def setup_logging(default_level, default_path=detect_os(), env_key='LOG_CFG'):
     """
     | **@author:** Prathyush SP
     | Logging Setup

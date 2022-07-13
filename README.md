@@ -24,6 +24,32 @@
 ###### Альтернативный запуск
 Выполнить _python ./main.py -t token -l login -p password -c count_
 
+###### Docker
+- Docker multi-stage build project distroless. Size = 151MB.
+ 
+- [DockerHub](https://hub.docker.com/repository/docker/palamiko/jira_telegram_bot_informer)
+1. Создать файл env.list с содержимым, указав свои данные:
+```
+    TOKEN=token
+    LOGIN=login
+    PASSWORD=passwd
+    COUNT=4
+    INTERVAL=60
+```
+2. Запустить 
+```
+docker run --name task-informer --env-file ./env.list palamiko/jira_telegram_bot_informer
+```
+Для запуска в интерактивном режиме, с выводом консоли:
+```
+docker run --name task-informer -it --env-file ./env.list palamiko/jira_telegram_bot_informer
+```
+
+Для самостоятельной сборки image:
+```
+docker build -t my_name_image .
+```
+
 ###### Команды бота
     '/s - Start' 
     '/h - Help, this message' 
