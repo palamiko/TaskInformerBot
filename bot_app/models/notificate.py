@@ -18,7 +18,7 @@ class NotificationsAboutNewTask:
         self.jira_api = _jira_api
         self.message_handler = message_handler
         self.last_state = self.get_task_from_jira()
-        self.notify: bool = False  # Уведомления вкл/откл
+        self.notify: bool = True  # Уведомления вкл/откл
 
     def get_task_from_jira(self) -> list[Task]:
         """ Формирует список Task из json(полученный из jira) """
@@ -86,7 +86,4 @@ def compare(list_old, list_new) -> bool:
 
 
 def create_list_names(tasks: list[Task]):
-    names = []
-    for task in tasks:
-        names.append(task.key)
-    return names
+    return list(map(lambda x: x.key, tasks))

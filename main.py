@@ -5,7 +5,6 @@ from bot_app.api.bot_api import bot
 
 
 def main():
-
     try:
         thread_bot = threading.Thread(target=bot.infinity_polling, name='ThreadTelegramBot', daemon=True)
         thread_bot.start()

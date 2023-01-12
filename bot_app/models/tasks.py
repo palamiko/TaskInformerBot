@@ -33,17 +33,50 @@ class Priority:
 
 
 @dataclass
-class Country:
+class Creator:
     self: str
-    value: str
+    name: str
+    key: str
+    emailAddress: str
+    displayName: str
+    active: bool
+    timeZone: str
+
+    @staticmethod
+    def from_dict(obj: Any) -> 'Creator':
+        _self = str(obj.get("self"))
+        _name = str(obj.get("name"))
+        _key = str(obj.get("key"))
+        _emailAddress = str(obj.get("emailAddress"))
+
+        _displayName = str(obj.get("displayName"))
+        _active = bool(obj.get('active'))
+        _timeZone = str(obj.get("timeZone"))
+        return Creator(_self, _name, _key, _emailAddress, _displayName, _active, _timeZone)
+
+
+@dataclass
+class Links:
+    self: str
+
+    @staticmethod
+    def from_dict(obj: Any) -> 'Links':
+        _self = str(obj.get("self"))
+        return Links(_self)
+
+
+@dataclass
+class Country:
     id: str
+    name: str
+    _links: Links
 
     @staticmethod
     def from_dict(obj: Any) -> 'Country':
-        _self = str(obj.get("self"))
-        _value = str(obj.get("value"))
         _id = str(obj.get("id"))
-        return Country(_self, _value, _id)
+        _name = str(obj.get("name"))
+        __links = Links.from_dict(obj.get("_links"))
+        return Country(_id, _name, __links)
 
 
 @dataclass
@@ -110,26 +143,27 @@ class Assignee:
 @dataclass
 class Fields:
     summary: str
-    customfield_11611: str
+    creator: Creator
     description: str
     priority: Priority
-    customfield_11213: str
     status: Status
-    customfield_12838: Country
+    customfield_10002: Country
     assignee: Union[Assignee, None]
 
     @staticmethod
     def from_dict(obj: Any) -> 'Fields':
         _summary = str(obj.get("summary"))
-        _customfield_11611 = str(obj.get("customfield_11611"))
+        _creator = Creator.from_dict(obj.get("creator"))
         _description = str(obj.get("description"))
         _priority = Priority.from_dict(obj.get("priority"))
-        _customfield_11213 = str(obj.get("customfield_11213"))
         _status = Status.from_dict(obj.get("status"))
-        _customfield_12838 = Country.from_dict(obj.get("customfield_12838"))
+        try:
+            _customfield_10002 = Country.from_dict(obj.get("customfield_10002")[0])
+        except IndexError:
+            _customfield_10002 = Country('0', '-', Links(''))
         _assignee = Assignee.from_dict(obj.get("assignee"))
-        return Fields(_summary, _customfield_11611, _description, _priority, _customfield_11213, _status,
-                      _customfield_12838, _assignee)
+        return Fields(_summary, _creator, _description, _priority, _status,
+                      _customfield_10002, _assignee)
 
 
 @dataclass

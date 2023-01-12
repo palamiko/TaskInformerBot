@@ -18,9 +18,8 @@ def interval_default(interval: int) -> int:
 
 
 def jira_url(count_task: int) -> str:
-    return 'https://jira.crpt.ru/rest/api/2/search?jql=project=EASUP+order+by+created' \
-           '&fields=id,key,description,priority,customfield_11611,summary,status,customfield_11213' \
-           f',assignee.displayName,customfield_12838&maxResults={count_task}'
+    return 'https://support.ai-mark.info/rest/api/2/search?jql=order+by+created' \
+           f'&fields=id,key,description,priority,summary,status,creator,customfield_10002&maxResults={count_task}'
 
 
 parser = argparse.ArgumentParser(description="Arguments for JiraTelegramBotInformer",

@@ -8,7 +8,6 @@ from bot_app.models.message_handler import mess_handler
 from bot_app.models.notificate import notification
 from bot_app.utils.const import *
 
-
 bot = telebot.TeleBot(TOKEN, parse_mode='html')
 
 
@@ -47,24 +46,6 @@ def start(message):
     add_btn_get_task(message)
 
 
-@bot.message_handler(commands=['on'])
-def notification_on(message):
-    logger.debug('command: notification_on')
-
-    mess_handler.message = message
-    notification.notify = True
-    send_notification(message, notify_text=mess_notify_on)
-    notification.run_thread()
-
-
-@bot.message_handler(commands=['off'])
-def notification_off(message):
-    logger.debug('command: notification_off')
-
-    notification.notify = False
-    send_notification(message, notify_text=mess_notify_off)
-
-
 @bot.message_handler(regexp=name_task_mask)
 def send_task_desc(message):
     """ Отправляет подробное описание одной заявки """
@@ -79,7 +60,7 @@ def send_task_desc(message):
 def text_request_handler(message):
     logger.debug('command: show_tickets')
 
-    if message.text in [title_show_ticket, 't']:
+    if message.text in [title_show_ticket, '/t']:
         # Отправляет краткое описание 4‑х последних тикетов
 
         tasks = mess_handler.get_task_from_json(jira_api.get_tasks(COUNT))
