@@ -46,6 +46,25 @@ def start(message):
     add_btn_get_task(message)
 
 
+@bot.message_handler(commands=['on'])
+def notification_on(message):
+    logger.debug('command: notification_on')
+
+    mess_handler.message = message
+    print(message.chat.id)
+    notification.notify = True
+    send_notification(message, notify_text=mess_notify_on)
+    notification.run_thread(notification.run_observer)
+
+
+@bot.message_handler(commands=['off'])
+def notification_off(message):
+    logger.debug('command: notification_off')
+
+    notification.notify = False
+    send_notification(message, notify_text=mess_notify_off)
+
+
 @bot.message_handler(regexp=name_task_mask)
 def send_task_desc(message):
     """ Отправляет подробное описание одной заявки """

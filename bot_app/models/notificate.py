@@ -1,6 +1,7 @@
 import collections
 import threading
 import time
+from typing import Any
 
 from bot_app import logger
 from bot_app.api.jira_api import JiraApi, jira_api
@@ -9,6 +10,14 @@ from bot_app.models.message_handler import MessageHandler, mess_handler
 from bot_app.models.tasks import Task
 
 from bot_app.utils.const import COUNT_TASK_IN_NOTIFY, INTERVAL
+
+
+def compare(list_old, list_new) -> bool:
+    return collections.Counter(list_old) == collections.Counter(list_new)
+
+
+def create_list_names(tasks: list[Task]):
+    return list(map(lambda x: x.key, tasks))
 
 
 class NotificationsAboutNewTask:
@@ -41,6 +50,8 @@ class NotificationsAboutNewTask:
 
         from bot_app.api.bot_api import send_notification
 
+        logger.debug(f'Тикеты одинаковые: {equals}')
+        print(f'Тикеты одинаковые: {equals}')
         if not equals:
             logger.debug('New task found')
 
@@ -55,11 +66,10 @@ class NotificationsAboutNewTask:
         self.last_state.extend(tasks)
 
     @staticmethod
-    def run_thread():
+    def run_thread(function: Any):
         """ Запускает поток с уведомлениями о новых тикетах """
 
-        thread_notify = threading.Thread(
-            target=notification.run_observer, name='ThreadNotificationAboutNewTask', daemon=True)
+        thread_notify = threading.Thread(target=function, name='ThreadNotificationAboutNewTask', daemon=True)
         thread_notify.start()
         thread_notify.join()
 
@@ -75,15 +85,8 @@ class NotificationsAboutNewTask:
                     list_old=create_list_names(self.last_state),
                     list_new=create_list_names(tasks)
                 )
+
                 self.sent_notification(equals=equal, tasks=tasks)
 
 
 notification = NotificationsAboutNewTask(interval=INTERVAL, _jira_api=jira_api, message_handler=mess_handler)
-
-
-def compare(list_old, list_new) -> bool:
-    return collections.Counter(list_old) == collections.Counter(list_new)
-
-
-def create_list_names(tasks: list[Task]):
-    return list(map(lambda x: x.key, tasks))
